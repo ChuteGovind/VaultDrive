@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMS Drive - Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons for Drive Aesthetics -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-cloud"></i>
+                    <span>BMS Drive</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-filter="all">
+                    <i class="fa-solid fa-hard-drive"></i>
+                    <span>My Drive</span>
+                </a>
+                <a href="#" class="nav-item" data-filter="IMAGE">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Images</span>
+                </a>
+                <a href="#" class="nav-item" data-filter="VIDEO">
+                    <i class="fa-solid fa-clapperboard"></i>
+                    <span>Videos</span>
+                </a>
+                <a href="#" class="nav-item" data-filter="AUDIO">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Audio</span>
+                </a>
+                <a href="#" class="nav-item" data-filter="DOCUMENT">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Documents</span>
+                </a>
+                <a href="#" class="nav-item" data-filter="PDF">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>PDFs</span>
+                </a>
+                <a href="#" class="nav-item" data-filter="recent">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Recent</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="storage-card">
+                    <div class="storage-title">
+                        <i class="fa-solid fa-database"></i>
+                        <span>Storage</span>
+                    </div>
+                    <div class="storage-bar">
+                        <div class="storage-bar-progress" id="storageProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="storage-details" id="storageDetails">0 B of 500 MB used</div>
+                    <div class="file-count" id="storageFileCount">0 files</div>
+                </div>
+                
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Search & Profile Bar -->
+            <header class="topbar">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchInput" placeholder="Search files by name...">
+                        <button class="btn-filter" id="btnFilterToggle" title="Advanced Search Options">
+                            <i class="fa-solid fa-sliders"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Advanced Search Form Dropdown -->
+                    <div class="advanced-search-dropdown hidden" id="advancedSearchPanel">
+                        <h4>Advanced Search</h4>
+                        <div class="dropdown-row">
+                            <div class="control-group">
+                                <label for="searchCategory">Category</label>
+                                <select id="searchCategory">
+                                    <option value="">All Categories</option>
+                                    <option value="IMAGE">Images</option>
+                                    <option value="VIDEO">Videos</option>
+                                    <option value="AUDIO">Audio</option>
+                                    <option value="PDF">PDFs</option>
+                                    <option value="DOCUMENT">Documents</option>
+                                    <option value="SPREADSHEET">Spreadsheets</option>
+                                    <option value="PRESENTATION">Presentations</option>
+                                    <option value="ARCHIVE">Archives</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="dropdown-row">
+                            <div class="control-group">
+                                <label for="startDate">From Date</label>
+                                <input type="date" id="startDate">
+                            </div>
+                            <div class="control-group">
+                                <label for="endDate">To Date</label>
+                                <input type="date" id="endDate">
+                            </div>
+                        </div>
+                        <div class="dropdown-actions">
+                            <button class="btn-sm btn-text-sec" id="btnResetSearch">Reset</button>
+                            <button class="btn-sm btn-primary-sm" id="btnApplySearch">Search</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="topbar-actions">
+                    <button class="btn-upload" id="openUploadModalBtn">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Upload File</span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="user-info">
+                            <span class="user-name" id="userName">User Name</span>
+                            <span class="user-role" id="userRole">ROLE_USER</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Scroll Body -->
+            <div class="dashboard-body">
+                
+                <div id="alertBox" class="alert hidden"></div>
+                
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <h1 id="welcomeMessage">Welcome back!</h1>
+                    <p>Access and upload your files securely in GDdrive.</p>
+                </section>
+                
+                <!-- Statistics Summary Cards -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="stat-info">
+                            <h3>PDFs</h3>
+                            <p id="statCountPdf">0 files</p>
+                            <span id="statSizePdf">0 B</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fa-solid fa-image"></i></div>
+                        <div class="stat-info">
+                            <h3>Photos</h3>
+                            <p id="statCountImage">0 files</p>
+                            <span id="statSizeImage">0 B</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="stat-info">
+                            <h3>Documents</h3>
+                            <p id="statCountDocument">0 files</p>
+                            <span id="statSizeDocument">0 B</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fa-solid fa-clapperboard"></i></div>
+                        <div class="stat-info">
+                            <h3>Media</h3>
+                            <p id="statCountMedia">0 files</p>
+                            <span id="statSizeMedia">0 B</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Drive Content Header -->
+                <section class="content-header">
+                    <h2 id="currentCategoryText">My Files</h2>
+                    <div class="view-toggles">
+                        <button class="view-btn active" id="gridViewBtn" title="Grid View">
+                            <i class="fa-solid fa-grip"></i>
+                        </button>
+                        <button class="view-btn" id="listViewBtn" title="List View">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                    </div>
+                </section>
+                
+                <!-- Files Area -->
+                <section class="files-container grid-view" id="filesContainer">
+                    <!-- Dynamic Files Load Here -->
+                    <div class="empty-state" id="emptyState">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <h3>Your Drive is empty</h3>
+                        <p>Click "Upload File" above or drag files here to start storing.</p>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+        
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal hidden" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload File</h3>
+                <button class="close-modal" id="closeUploadModal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <div class="dropzone" id="dropzone">
+                        <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                        <p>Drag and drop your file here, or <span class="browse-link">browse</span></p>
+                        <input type="file" id="fileInput" name="file" class="hidden-input" required>
+                    </div>
+                    
+                    <div id="fileSpecs" class="file-specs hidden">
+                        <div class="file-info-row">
+                            <span class="file-specs-name" id="selectedFileName">Filename.txt</span>
+                            <span class="file-specs-size" id="selectedFileSize">0 B</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group-modal">
+                        <label for="uploadCategory">Category Override (Optional)</label>
+                        <select id="uploadCategory">
+                            <option value="">Auto-Detect Category</option>
+                            <option value="IMAGE">Image</option>
+                            <option value="VIDEO">Video</option>
+                            <option value="AUDIO">Audio</option>
+                            <option value="PDF">PDF</option>
+                            <option value="DOCUMENT">Document</option>
+                            <option value="SPREADSHEET">Spreadsheet</option>
+                            <option value="PRESENTATION">Presentation</option>
+                            <option value="ARCHIVE">Archive</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group-modal">
+                        <label for="uploadDescription">Description (Optional)</label>
+                        <textarea id="uploadDescription" placeholder="Add a description for this file..."></textarea>
+                    </div>
+                    
+                    <div class="progress-container hidden" id="uploadProgressContainer">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="uploadProgressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="uploadProgressText">Uploading 0%</div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" id="cancelUploadBtn">Cancel</button>
+                        <button type="submit" class="btn-submit" id="submitUploadBtn">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit File Metadata Modal -->
+    <div class="modal hidden" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit File Info</h3>
+                <button class="close-modal" id="closeEditModal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editFileId">
+                    <div class="form-group-modal">
+                        <label for="editFileName">File Name</label>
+                        <input type="text" id="editFileName" required>
+                    </div>
+                    
+                    <div class="form-group-modal">
+                        <label for="editCategory">Category</label>
+                        <select id="editCategory">
+                            <option value="IMAGE">Image</option>
+                            <option value="VIDEO">Video</option>
+                            <option value="AUDIO">Audio</option>
+                            <option value="PDF">PDF</option>
+                            <option value="DOCUMENT">Document</option>
+                            <option value="SPREADSHEET">Spreadsheet</option>
+                            <option value="PRESENTATION">Presentation</option>
+                            <option value="ARCHIVE">Archive</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group-modal">
+                        <label for="editDescription">Description</label>
+                        <textarea id="editDescription" placeholder="Add description here..."></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" id="cancelEditBtn">Cancel</button>
+                        <button type="submit" class="btn-submit">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div class="modal hidden" id="previewModal">
+        <div class="modal-content preview-content">
+            <div class="modal-header">
+                <h3 id="previewTitle">File Preview</h3>
+                <div class="preview-actions">
+                    <button class="btn-icon" id="previewDownloadBtn" title="Download File"><i class="fa-solid fa-download"></i></button>
+                    <button class="close-modal" id="closePreviewModal">&times;</button>
+                </div>
+            </div>
+            
+            <div class="modal-body preview-body" id="previewBody">
+                <!-- Preview items inserted dynamically: images, txt strings, audio, videos, iframe pdf -->
+            </div>
+            
+            <div class="modal-footer" id="previewDescription"></div>
+        </div>
+    </div>
+
+    <!-- Details View Modal -->
+    <div class="modal hidden" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>File Details</h3>
+                <button class="close-modal" id="closeDetailsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="details-table">
+                    <tr>
+                        <th>Filename:</th>
+                        <td id="detName"></td>
+                    </tr>
+                    <tr>
+                        <th>Category:</th>
+                        <td id="detCategory"></td>
+                    </tr>
+                    <tr>
+                        <th>Size:</th>
+                        <td id="detSize"></td>
+                    </tr>
+                    <tr>
+                        <th>Type:</th>
+                        <td id="detMime"></td>
+                    </tr>
+                    <tr>
+                        <th>Uploaded:</th>
+                        <td id="detUploaded"></td>
+                    </tr>
+                    <tr>
+                        <th>Last Modified:</th>
+                        <td id="detModified"></td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td id="detDesc"></td>
+                    </tr>
+                </table>
+                <div class="modal-actions" style="margin-top:20px;">
+                    <button class="btn-cancel" id="closeDetailsBtn" style="width:100%">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal hidden" id="deleteModal">
+        <div class="modal-content delete-confirm-content">
+            <div class="modal-header">
+                <h3>Delete File</h3>
+                <button class="close-modal" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to permanently delete <strong id="deleteFileName">this file</strong>?</p>
+                <p class="warning-text"><i class="fa-solid fa-triangle-exclamation"></i> This action cannot be undone and will delete the physical file from the server.</p>
+                <input type="hidden" id="deleteFileId">
+                <div class="modal-actions" style="margin-top:24px;">
+                    <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
+                    <button class="btn-delete-confirm" id="confirmDeleteBtn">Delete Permanently</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
